@@ -7,14 +7,16 @@ public class Users {
     private String LastName;
     private String Email;
     private String Password;
+    private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-Z]+$");
+private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
 
     public Users(String firstName, String lastName, String email, String password) {
         this.UserId = id;
-        this.FirstName = firstName;
-        this.LastName = lastName;
+        setFirstName(firstName);
+        setLastName(lastName);
         this.Email = email;
-setPassword(password);
-id++;
+        setPassword(password);
+         id++;
     }
     
     public boolean isValidPassword(String password) {
@@ -34,21 +36,35 @@ id++;
     public String getFirstName() {
         return FirstName;
     }
-    public void setFirstName(String firstName) {
-        FirstName = firstName;
+   public void setFirstName(String firstName) {
+    if (firstName != null && NAME_PATTERN.matcher(firstName.trim()).matches() && !firstName.trim().isEmpty()) {
+        FirstName = firstName.trim();
+    } else {
+        System.out.println("First name is not valid. It must contain only letters.");
     }
+}
+
     public String getLastName() {
         return LastName;
     }
-    public void setLastName(String lastName) {
-        LastName = lastName;
+public void setLastName(String lastName) {
+    if (lastName != null && NAME_PATTERN.matcher(lastName.trim()).matches() && !lastName.trim().isEmpty()) {
+        LastName = lastName.trim();
+    } else {
+        System.out.println("Last name is not valid. It must contain only letters.");
     }
+}
+
     public String getEmail() {
         return Email;
     }
     public void setEmail(String email) {
-        Email = email;
+    if (email != null && EMAIL_PATTERN.matcher(email.trim()).matches()) {
+        Email = email.trim().toLowerCase();
+    } else {
+        System.out.println("Email is not valid. Please provide a valid email format (example@domain.com).");
     }
+}
     public String getPassword() {
         return Password;
     }
@@ -57,5 +73,20 @@ id++;
         throw new IllegalArgumentException("Password is not valid. It must contain at least 8 characters, including uppercase, lowercase, digit, and special character.");
     }
     this.Password = password;
+
 }
+public int getUserId() {
+        return UserId;
+    }
+
+    @Override
+    public String toString() {
+        return "Users{" +
+                "UserId=" + UserId +
+                ", FirstName='" + FirstName + '\'' +
+                ", LastName='" + LastName + '\'' +
+                ", Email='" + Email + '\'' +
+                ", Password='" + Password + '\'' +
+                '}';
+    }
 }
