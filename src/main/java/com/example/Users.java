@@ -1,6 +1,9 @@
 package com.example;
 import java.util.regex.Pattern;
+import java.util.HashSet;
+import java.util.Set;
 public class Users {
+    private static Set<String> registeredEmails = new HashSet<>();
     private static int id= 2510001;
     private int UserId; 
     private String FirstName;
@@ -14,7 +17,7 @@ private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+
         this.UserId = id;
         setFirstName(firstName);
         setLastName(lastName);
-        this.Email = email;
+        setEmail(email);
         setPassword(password);
          id++;
     }
@@ -59,12 +62,24 @@ public void setLastName(String lastName) {
         return Email;
     }
     public void setEmail(String email) {
-    if (email != null && EMAIL_PATTERN.matcher(email.trim()).matches()) {
-        Email = email.trim().toLowerCase();
-    } else {
-        System.out.println("Email is not valid. Please provide a valid email format (example@domain.com).");
+        if (email != null && EMAIL_PATTERN.matcher(email.trim()).matches()) {
+            String normalizedEmail = email.trim().toLowerCase();
+            
+            if (isDuplicateEmail(normalizedEmail)) {
+                System.out.println("Email already exists! Please use a different email address.");
+                return; 
+            }
+            this.Email = normalizedEmail;
+            registeredEmails.add(normalizedEmail);
+        } else {
+            System.out.println("Email is not valid. Please provide a valid email format (example@domain.com).");
+        }
     }
-}
+ public static boolean isDuplicateEmail(String email) {
+        if (email == null) return false;
+        return registeredEmails.contains(email.trim().toLowerCase());
+    }
+
     public String getPassword() {
         return Password;
     }
@@ -75,6 +90,8 @@ public void setLastName(String lastName) {
     this.Password = password;
 
 }
+
+
 public int getUserId() {
         return UserId;
     }
