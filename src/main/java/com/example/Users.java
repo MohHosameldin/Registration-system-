@@ -32,7 +32,7 @@ String url = "jdbc:mysql://localhost:3306/java";
 
       ){
         if(rs.next()){
-            int maxid=rs.getInt("id");
+            int maxid=rs.getInt(1);
             if (maxid>0){
 id=maxid+1;
 
@@ -84,9 +84,10 @@ public Users() {
     if (firstName != null && NAME_PATTERN.matcher(firstName.trim()).matches() && !firstName.trim().isEmpty()) {
         FirstName = WordUtils.capitalize(firstName.trim());
     } else {
-        System.out.println("First name is not valid. It must contain only letters.");
+ System.out.println("First name is not valid. It must contain only letters.");
+        System.out.println("Program terminated due to invalid input.");
+        System.exit(1);}
     }
-}
 
     public String getLastName() {
         return LastName;
@@ -95,8 +96,9 @@ public void setLastName(String lastName) {
     if (lastName != null && NAME_PATTERN.matcher(lastName.trim()).matches() && !lastName.trim().isEmpty()) {
         LastName = WordUtils.capitalize(lastName.trim());
     } else {
-        System.out.println("Last name is not valid. It must contain only letters.");
-    }
+System.out.println("Second name is not valid. It must contain only letters.");
+        System.out.println("Program terminated due to invalid input.");
+        System.exit(1);   }
 }
 
     public String getEmail() {
