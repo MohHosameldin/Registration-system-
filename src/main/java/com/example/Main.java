@@ -1,7 +1,5 @@
 package com.example;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.regex.Pattern;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,7 +10,15 @@ public class Main {
     public static Scanner in= new Scanner(System.in);
     public static void main(String[] args) {
 Users num1 = new Users();
-System.out.println("Welcome to the User Registeration System");
+while (true) {
+    String url = "jdbc:mysql://localhost:3306/Users"; 
+        String user = "root"; 
+        String password = "Mo4magic$";
+
+        try ( Connection conn = DriverManager.getConnection(url, user, password)) {
+
+
+ System.out.println("Welcome to the User Registeration System");
 System.out.println("Please enter your details to register: ");
 System.out.println("First Name: ");
         String firstName = in.nextLine();
@@ -27,6 +33,11 @@ System.out.println("First Name: ");
             email = in.nextLine();
             num1.setEmail(email);
         } 
+        while(num1.isDuplicateEmail(email)) {
+            System.out.println("Email already registered. Please enter a different email: ");
+            email = in.nextLine();
+            num1.setEmail(email);
+        }
         System.out.println("Password: ");
         String pass = in.nextLine();
         while (!num1.isValidPassword(pass)) {
@@ -44,21 +55,29 @@ System.out.println("First Name: ");
         System.out.println("Your First Name is: " + num1.getFirstName());
         System.out.println("Your Last Name is: " + num1.getLastName());
         System.out.println("Your Email is: " + num1.getEmail()); 
-
-        String url = "jdbc:mysql://localhost:3306/Users"; // Replace 'testdb' with your database name
-        String user = "root"; // Replace with your MySQL username
-        String password = "Mo4magic$"; // Replace with your MySQL password
-
-        try ( Connection conn = DriverManager.getConnection(url, user, password)
         
-        
-        ) {
+
+
+        num1.savetodatabase();
+      
+        }
+         
             
-        } catch (SQLException e) {
+        catch (SQLException e) {
             System.out.println("Connection error: " + e.getMessage());
         }
     }
 
+   
+}
+
+
+
+
+
+
+
+       
 
 
    

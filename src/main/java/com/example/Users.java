@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.sql.PreparedStatement;
 public class Users {
     private static Set<String> registeredEmails = new HashSet<>();
     private static List<Users> allUsers = new ArrayList<>();
@@ -83,7 +84,7 @@ public void setLastName(String lastName) {
             System.out.println("Email is not valid. Please provide a valid email format (example@domain.com).");
         }
     }
- public static boolean isDuplicateEmail(String email) {
+ public  boolean isDuplicateEmail(String email) {
         if (email == null) return false;
         return registeredEmails.contains(email.trim().toLowerCase());
     }
@@ -129,9 +130,11 @@ public boolean isValidEmail(String email) {
         String password = "Mo4magic$"; // Replace with your MySQL password
         String insertSQL = "INSERT INTO users (id, First_name, Second_name, Email, Password) VALUES (?, ?, ?, ?, ?)";
 
-        try ( Connection conn = DriverManager.getConnection(url, user, password) 
-             PreparedStatement pstmt = conn.prepareStatement(insertSQL) 
+        try ( Connection conn = DriverManager.getConnection(url, user, password);
+              PreparedStatement pstmt = conn.prepareStatement(insertSQL);
+
         ) {
+
             pstmt.setInt(1, this.UserId);
             pstmt.setString(2, this.FirstName);
             pstmt.setString(3, this.LastName);
