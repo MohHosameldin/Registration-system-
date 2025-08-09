@@ -125,9 +125,9 @@ public boolean isValidEmail(String email) {
                 '}';
     }
     public void savetodatabase(){
-  String url = "jdbc:mysql://localhost:3306/Users"; // Replace 'testdb' with your database name
+  String url = "jdbc:mysql://localhost:3306/java"; // Replace 'testdb' with your database name
         String user = "root"; // Replace with your MySQL username
-        String password = "Mo4magic$"; // Replace with your MySQL password
+        String password = "cmpunk"; // Replace with your MySQL password
         String insertSQL = "INSERT INTO users (id, First_name, Second_name, Email, Password) VALUES (?, ?, ?, ?, ?)";
 
         try ( Connection conn = DriverManager.getConnection(url, user, password);

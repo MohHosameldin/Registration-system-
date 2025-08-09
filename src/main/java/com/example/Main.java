@@ -1,9 +1,5 @@
 package com.example;
 import java.sql.*;
-import java.util.regex.Pattern;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.regex.Pattern;
 import java.util.Scanner;
 
 public class Main {
@@ -11,9 +7,9 @@ public class Main {
     public static void main(String[] args) {
 Users num1 = new Users();
 while (true) {
-    String url = "jdbc:mysql://localhost:3306/Users"; 
+    String url = "jdbc:mysql://localhost:3306/java"; 
         String user = "root"; 
-        String password = "Mo4magic$";
+        String password = "cmpunk";
 
         try ( Connection conn = DriverManager.getConnection(url, user, password)) {
 
@@ -33,7 +29,7 @@ System.out.println("First Name: ");
             email = in.nextLine();
             num1.setEmail(email);
         } 
-        while(num1.isDuplicateEmail(email)) {
+        while(!num1.isDuplicateEmail(email)) {
             System.out.println("Email already registered. Please enter a different email: ");
             email = in.nextLine();
             num1.setEmail(email);
@@ -41,7 +37,7 @@ System.out.println("First Name: ");
         System.out.println("Password: ");
         String pass = in.nextLine();
         while (!num1.isValidPassword(pass)) {
-            System.out.println("Invalid password. Please enter a valid password: ");
+            System.out.println("Password is not valid. It must contain at least 8 characters, including uppercase, lowercase, digit, and special character. ");
             pass = in.nextLine();
         }
         System.out.println("Confirm Password: ");
@@ -69,16 +65,5 @@ System.out.println("First Name: ");
     }
 
    
-}
-
-
-
-
-
-
-
-       
-
-
-   
+}   
 }
