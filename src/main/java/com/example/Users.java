@@ -1,9 +1,15 @@
 package com.example;
 import java.util.regex.Pattern;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 public class Users {
     private static Set<String> registeredEmails = new HashSet<>();
+    private static List<Users> allUsers = new ArrayList<>();
     private static int id= 2510001;
     private int UserId; 
     private String FirstName;
@@ -12,7 +18,10 @@ public class Users {
     private String Password;
     private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-Z]+$");
 private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
-
+public Users() {
+        this.UserId = id;
+        id++;
+    }
     public Users(String firstName, String lastName, String email, String password) {
         this.UserId = id;
         setFirstName(firstName);
@@ -30,8 +39,7 @@ private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+
         boolean hasUpper = password.chars().anyMatch(Character::isUpperCase);
         boolean hasLower = password.chars().anyMatch(Character::isLowerCase);
         boolean hasDigit = password.chars().anyMatch(Character::isDigit);
-        boolean hasSpecial = password.chars().anyMatch(ch -> 
-            "!@#$%^&*()_+-=[]{}|;:,.<>?".indexOf(ch) >= 0);
+        boolean hasSpecial = password.chars().anyMatch(ch ->"!@#$%^&*()_+-=[]{}|;:,.<>?".indexOf(ch) >= 0);
         
         return hasUpper && hasLower && hasDigit && hasSpecial;
     }
@@ -95,7 +103,16 @@ public void setLastName(String lastName) {
 public int getUserId() {
         return UserId;
     }
-
+public boolean isValidEmail(String email) {
+    if (email == null || email.trim().isEmpty()|| !EMAIL_PATTERN.matcher(email.trim()).matches()) {
+        return false;
+    }
+ 
+  else {
+    return true;
+  }  
+  
+}
     @Override
     public String toString() {
         return "Users{" +
@@ -106,4 +123,26 @@ public int getUserId() {
                 ", Password='" + Password + '\'' +
                 '}';
     }
+    public void savetodatabase(){
+  String url = "jdbc:mysql://localhost:3306/Users"; // Replace 'testdb' with your database name
+        String user = "root"; // Replace with your MySQL username
+        String password = "Mo4magic$"; // Replace with your MySQL password
+        String insertSQL = "INSERT INTO users (id, First_name, Second_name, Email, Password) VALUES (?, ?, ?, ?, ?)";
+
+        try ( Connection conn = DriverManager.getConnection(url, user, password) 
+             PreparedStatement pstmt = conn.prepareStatement(insertSQL) 
+        ) {
+            pstmt.setInt(1, this.UserId);
+            pstmt.setString(2, this.FirstName);
+            pstmt.setString(3, this.LastName);
+            pstmt.setString(4, this.Email);
+            pstmt.setString(5, this.Password);
+            pstmt.executeUpdate();
+            
+        } catch (SQLException e) {
+            System.out.println("Connection error: " + e.getMessage());
+        }
+
+    }
+
 }
