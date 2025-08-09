@@ -3,27 +3,59 @@ import java.util.regex.Pattern;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import org.apache.commons.text.WordUtils;
+
 public class Users {
     private static Set<String> registeredEmails = new HashSet<>();
-    private static List<Users> allUsers = new ArrayList<>();
     private static int id= 2510001;
     private int UserId; 
     private String FirstName;
     private String LastName;
     private String Email;
     private String Password;
+    private static boolean isIdInitialized = false;
     private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-Z]+$");
 private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+private static void intializeidfromdatabase(){
+if(isIdInitialized) return;
+String url = "jdbc:mysql://localhost:3306/java";
+       String user = "root";
+      String password = "cmpunk";
+      String MaxQuery="Select Max(id) FROM users";
+      try ( Connection conn=DriverManager.getConnection(url, user, password) ;
+      PreparedStatement pstmt=conn.prepareStatement(MaxQuery);
+      ResultSet rs= pstmt.executeQuery();
+
+      ){
+        if(rs.next()){
+            int maxid=rs.getInt("id");
+            if (maxid>0){
+id=maxid+1;
+
+            }
+        }
+isIdInitialized=true;
+      }
+
+      catch (SQLException e){
+
+         System.out.println("Error initializing ID from database: " + e.getMessage());
+      }
+      
+
+}
+ 
 public Users() {
+        intializeidfromdatabase();
         this.UserId = id;
         id++;
     }
     public Users(String firstName, String lastName, String email, String password) {
+        intializeidfromdatabase();
         this.UserId = id;
         setFirstName(firstName);
         setLastName(lastName);
@@ -50,7 +82,7 @@ public Users() {
     }
    public void setFirstName(String firstName) {
     if (firstName != null && NAME_PATTERN.matcher(firstName.trim()).matches() && !firstName.trim().isEmpty()) {
-        FirstName = firstName.trim();
+        FirstName = WordUtils.capitalize(firstName.trim());
     } else {
         System.out.println("First name is not valid. It must contain only letters.");
     }
@@ -61,7 +93,7 @@ public Users() {
     }
 public void setLastName(String lastName) {
     if (lastName != null && NAME_PATTERN.matcher(lastName.trim()).matches() && !lastName.trim().isEmpty()) {
-        LastName = lastName.trim();
+        LastName = WordUtils.capitalize(lastName.trim());
     } else {
         System.out.println("Last name is not valid. It must contain only letters.");
     }
@@ -86,7 +118,24 @@ public void setLastName(String lastName) {
     }
  public  boolean isDuplicateEmail(String email) {
         if (email == null) return false;
-        return registeredEmails.contains(email.trim().toLowerCase());
+        String url = "jdbc:mysql://localhost:3306/java";
+        String user = "root";
+        String password = "cmpunk";
+        String querycount="Select count(*) from users where email= ?";
+        try {
+            Connection conn= DriverManager.getConnection(url, user, password);
+            PreparedStatement stmt= conn.prepareStatement(querycount);
+            stmt.setString(1, email);
+            ResultSet rs= stmt.executeQuery();
+            if (rs.next()){
+        return rs.getInt(1)>0;
+                
+            }
+            
+        } catch (Exception e) {
+            System.err.println("Error connection to database"+ e.getMessage() );
+        } 
+         return false;
     }
 
     public String getPassword() {
